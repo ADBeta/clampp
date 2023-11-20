@@ -9,13 +9,11 @@ int main(const int argc, const char *argv[]) {
 
 	ClamppClass Args;
 	int a = Args.AddDefinition("hello", true);
-	int b = Args.AddDefinition("test", true);
-	int c = Args.AddDefinition("bleh", true);
 	
 	
-	Args.ScanArgs(argc - 1, argv + 1);
+	int err = Args.ScanArgs(argc - 1, argv + 1);
 	
-	
+	std::cout << err << std::endl;
 	
 	//std::cout << a << ": " << Args.DefinedArgList[(size_t)a].flag_pri << std::endl;
 	//std::cout << b << ": " << Args.DefinedArgList[(size_t)b].flag_pri << std::endl;

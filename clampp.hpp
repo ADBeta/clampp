@@ -13,6 +13,10 @@
 #include <vector>
 
 
+typedef enum {
+	CLAMPP_ENONE = 0, CLAMPP_ENOARGS = -1, CLAMPP_ENOMATCH = -2, 
+	CLAMPP_ENOSUBSTR = -3
+} ClamppError;
 
 class ClamppClass {
 	public:
@@ -24,16 +28,18 @@ class ClamppClass {
 	int AddDefinition(const char *pri, const char *sec, const bool has_substr);
 	
 	//Scan through the arguments using the standard argc/argv method
-	//TODO Returns
-	int ScanArgs(const int argc, const char *argv[]);
+	//Returns a ClamppError value
+	ClamppError ScanArgs(const int argc, const char *argv[]);
 	
 	
 	
 	
 	//private:
+	/*** Configuration Variables **********************************************/
 	
-	//Argument Definition Struct
-	//Setter & getter for substr
+	
+	
+	/** Argument Definition Struct ********************************************/
 	typedef struct {
 		const char *flag_pri = NULL;   //Primary flag string for argument (e.g -h)
 		const char *flag_sec = NULL;   //(Optional) Secondary flag string (e.g --help)

@@ -5,12 +5,19 @@
 * See the GitHub For more information: https://github.com/ADBeta/clampp
 * See example.cpp for programatic demonstation of usage/syntax.
 *
-* ADBeta(c)    18 Nov 2023
+* ADBeta(c)    23 Nov 2023    Version 0.5.5
 *******************************************************************************/
 #ifndef CLAMPP_H
 #define CLAMPP_H
 
 #include <vector>
+#include <string>
+
+/*** Configuration Variables **********************************************/
+namespace ClamppConfig {
+	//Are undefined arguments allowed. Defaults to false
+	extern bool allow_undefined_args;
+}
 
 
 typedef enum {
@@ -21,7 +28,7 @@ typedef enum {
 class ClamppClass {
 	public:
 	/*** API Functions ********************************************************/
-	//NOTE Function overflow for both versions of a Defined Argument.
+	//NOTE: Function overflow for both versions of a Defined Argument.
 	//Returns an index of the argument in the list or -1 if an error occured
 	//Add a Defined Argument with one one, primary flag string
 	int AddDefinition(const char *pri, const bool has_substr);
@@ -31,15 +38,14 @@ class ClamppClass {
 	//Returns a ClamppError value
 	ClamppError ScanArgs(const int argc, const char *argv[]);
 	
-	
+	//Get a DefinedArg's detected status. Either by index, or by flag_str
+	//Returns 0 or 1 if detected or not, or -1 if an error occured
+	int GetDetectedStatus(const int index);
+	int GetDetectedStatus(const char* flag);
 	
 	
 	//private:
-	/*** Configuration Variables **********************************************/
-	
-	
-	
-	/** Argument Definition Struct ********************************************/
+	/*** Argument Definition Struct *******************************************/
 	typedef struct {
 		const char *flag_pri = NULL;   //Primary flag string for argument (e.g -h)
 		const char *flag_sec = NULL;   //(Optional) Secondary flag string (e.g --help)
@@ -52,6 +58,8 @@ class ClamppClass {
 
 	//List of Defined Arguments 	
 	std::vector<ArgDef_t> DefinedArgList;
+	//List of Undefined Arguments. Not used if Config diables it
+	std::vector<std::string> UndefinedArgList;
 
 };
 

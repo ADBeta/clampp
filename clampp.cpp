@@ -5,7 +5,7 @@
 * See the GitHub For more information: https://github.com/ADBeta/clampp
 * See example.cpp for programatic demonstation of usage/syntax.
 *
-* ADBeta(c)    19 Nov 2023    Version 0.2.4
+* ADBeta(c)
 *******************************************************************************/
 #include "clampp.hpp"
 
@@ -13,6 +13,11 @@
 
 #include <iterator>
 #include <cstring>
+#include <string>
+
+/*** Configuration ************************************************************/
+bool ClamppConfig::allow_undefined_args = false;
+
 
 /*** Private Functions ********************************************************/
 
@@ -59,7 +64,6 @@ ClamppError ClamppClass::ScanArgs(const int argc, const char *argv[]) {
 	for(int crnt_arg = 0; crnt_arg < argc; crnt_arg++) {
 		const char *arg_str = argv[crnt_arg];
 		
-		std::cout << arg_str << std::endl; //TODO
 		//Keep track of if the current argument has been matched to a definition
 		bool found_match = false;
 		
@@ -83,19 +87,45 @@ ClamppError ClamppClass::ScanArgs(const int argc, const char *argv[]) {
 					def->substr = argv[crnt_arg];				
 				}
 			}
-			
-			
 		}
 		
-		//If no match error, or put into array
+		//If no matching strings are found, either error or add the input char *
+		//to a std::string vector
 		if(found_match == false) {
-			std::cout << "No match found" << std::endl;
+			if(ClamppConfig::allow_undefined_args == true) {
+				this->UndefinedArgList.push_back(arg_str);
+			} else {
+				return CLAMPP_ENOMATCH;
+			}
 		}
-				
+		
 	}
 	
-	
-	
-	
+	//If everything went well, exit with no error
 	return CLAMPP_ENONE;
 }
+
+int ClamppClass::GetDetectedStatus(const int index) {
+	if(index < 0) return -1;
+	if((size_t)index >= this->DefinedArgList.size()) return -2;
+	
+	return DefinedArgList[(size_t)index].was_detected;
+}
+
+int ClamppClass::GetDetectedStatus(const char* flag) {
+	//Go through each Defined Argument looking for a match
+	for(auto def = this->DefinedArgList.begin(); def != this->DefinedArgList.end(); def++) {
+		//See if the primary or secondary flag strings match
+			int pri_cmp = strcmp(def->flag_pri, flag);
+			//Preset the sec_cmp to failed, if it has been defined, compare
+			int sec_cmp = -1;
+			if(def->flag_sec != NULL) sec_cmp = strcmp(def->flag_sec, flag);
+			
+			//If either flag string matched, return detected var
+			if(pri_cmp == 0 || sec_cmp == 0) return def->was_detected;
+	}
+	
+	//Not match found, give error
+	return -1;
+}
+

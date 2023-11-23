@@ -80,41 +80,26 @@ ClamppError ClamppClass::ScanArgs(const int argc, const char *argv[]) {
 	for(int crnt_arg = 0; crnt_arg < argc; crnt_arg++) {
 		const char *arg_str = argv[crnt_arg];
 		
-		//Keep track of if the current argument has been matched to a definition
-		bool found_match = false;
+		int index = FindDefinedByFlag(arg_str);
 		
-		//Go through each Defined Argument looking for a match
-		for(auto def = this->DefinedArgList.begin(); def != this->DefinedArgList.end(); def++) {
-			//See if the primary or secondary flag strings match
-			int pri_cmp = strcmp(def->flag_pri, arg_str);
-			//Preset the sec_cmp to failed, if it has been defined, compare
-			int sec_cmp = -1;
-			if(def->flag_sec != NULL) sec_cmp = strcmp(def->flag_sec, arg_str);
+		//If the target was found, set its detected flag, and get a substring if
+		//It was set. Return if no substring was given but was required
+		if(index >= 0) {
+			ArgDef_t *found_arg = &this->DefinedArgList[(size_t)index];
 			
-			//If either flag string matched, set the argument to detected
-			if(pri_cmp == 0 || sec_cmp == 0) {
-				found_match = true;
-				def->was_detected = true;
-				
-				//If the string is marked as having a substring, look for one.
-				//Return error if a subsequent string doesn't exist
-				if(def->has_substr == true) {
-					if(++crnt_arg == argc) return CLAMPP_ENOSUBSTR;
-					def->substr = argv[crnt_arg];				
-				}
+			found_arg->was_detected = true;
+			
+			if(found_arg->has_substr == true) {
+				if(++crnt_arg == argc) return CLAMPP_ENOSUBSTR;
+				found_arg->substr = argv[crnt_arg];				
 			}
-		}
-		
-		//If no matching strings are found, either error or add the input char *
-		//to a std::string vector
-		if(found_match == false) {
-			if(ClamppConfig::allow_undefined_args == true) {
-				this->UndefinedArgList.push_back(arg_str);
-			} else {
-				return CLAMPP_ENOMATCH;
-			}
-		}
-		
+		} 
+		else {
+			//If undefined strings are not allowed, return an error.
+			if(ClamppConfig::allow_undefined_args == false) return CLAMPP_ENOMATCH;
+			//If they are allowed, push the string to the end of the list.
+			this->UndefinedArgList.push_back(arg_str);
+		}		
 	}
 	
 	//If everything went well, exit with no error

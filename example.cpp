@@ -12,7 +12,7 @@ int main(const int argc, const char *argv[]) {
 	
 	int a = Args.AddDefinition("hello", true);
 	int b = Args.AddDefinition("bye", true);
-	
+	int c = Args.AddDefinition("test", false);
 	
 	int err = Args.ScanArgs(argc - 1, argv + 1);
 	
@@ -21,10 +21,15 @@ int main(const int argc, const char *argv[]) {
 	std::cout << "find: " << Args.FindDefinedByFlag("hello") << std::endl;
 	std::cout << "find: " << Args.FindDefinedByFlag("ho") << std::endl;
 	std::cout << "find: " << Args.FindDefinedByFlag("bye") << std::endl;
+	std::cout << "find: " << Args.FindDefinedByFlag("test") << std::endl;
 	
 	std::cout << "Substr: " << Args.GetSubstring(a) << std::endl;
 	std::cout << "Substr: " << Args.GetSubstring(b) << std::endl;
 	std::cout << "Substr: " << Args.GetSubstring("bye") << std::endl;
+	
+	
+	std::cout << "test detected: " << Args.GetDetectedStatus(c) << std::endl;
+	std::cout << "Substr: " << Args.GetSubstring(c) << std::endl;
 	
 	//std::cout << a << ": " << Args.DefinedArgList[(size_t)a].flag_pri << std::endl;
 	//std::cout << b << ": " << Args.DefinedArgList[(size_t)b].flag_pri << std::endl;

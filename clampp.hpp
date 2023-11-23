@@ -5,7 +5,7 @@
 * See the GitHub For more information: https://github.com/ADBeta/clampp
 * See example.cpp for programatic demonstation of usage/syntax.
 *
-* ADBeta(c)    23 Nov 2023    Version 0.5.5
+* ADBeta(c)    23 Nov 2023    Version 0.5.8
 *******************************************************************************/
 #ifndef CLAMPP_H
 #define CLAMPP_H
@@ -41,7 +41,12 @@ class ClamppClass {
 	//Get a DefinedArg's detected status. Either by index, or by flag_str
 	//Returns 0 or 1 if detected or not, or -1 if an error occured
 	int GetDetectedStatus(const int index);
-	int GetDetectedStatus(const char* flag);
+	int GetDetectedStatus(const char *flag);
+	
+	//Get a DefinedArg's Substring, in std::string format, either by index or
+	//flag_str. Returns an empty string on error
+	std::string GetSubstring(const int index);
+	std::string GetSubstring(const char *flag);
 	
 	
 	//private:
@@ -60,6 +65,10 @@ class ClamppClass {
 	std::vector<ArgDef_t> DefinedArgList;
 	//List of Undefined Arguments. Not used if Config diables it
 	std::vector<std::string> UndefinedArgList;
+
+	//Finds & returns the index of a DefinedArg by its flag_str.
+	//Returns -1 if the flag_str could not match with any Defined Arg
+	int FindDefinedByFlag(const char *flag);
 
 };
 

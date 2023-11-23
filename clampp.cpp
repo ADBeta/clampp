@@ -20,7 +20,23 @@ bool ClamppConfig::allow_undefined_args = false;
 
 
 /*** Private Functions ********************************************************/
+int ClamppClass::FindDefinedByFlag(const char *flag) {
+	//Go through each Defined Argument looking for a match
+	for(auto def = this->DefinedArgList.begin(); def != this->DefinedArgList.end(); def++) {
+		//See if the primary or secondary flag strings match
+		int pri_cmp = -1, sec_cmp = -1;
+		pri_cmp = strcmp(def->flag_pri, flag);
+		if(def->flag_sec != NULL) sec_cmp = strcmp(def->flag_sec, flag);
+		
+		//If either flag string matched, return the distance from begin() to now
+		if(pri_cmp == 0 || sec_cmp == 0) {
+			return (int)std::distance(DefinedArgList.begin(), def);
+		}
+	}
 
+	//No match
+	return -1;
+}
 
 /*** API Functions ************************************************************/
 //Add a Defined Argument with a single, primary flag string
@@ -113,19 +129,28 @@ int ClamppClass::GetDetectedStatus(const int index) {
 }
 
 int ClamppClass::GetDetectedStatus(const char* flag) {
-	//Go through each Defined Argument looking for a match
-	for(auto def = this->DefinedArgList.begin(); def != this->DefinedArgList.end(); def++) {
-		//See if the primary or secondary flag strings match
-			int pri_cmp = strcmp(def->flag_pri, flag);
-			//Preset the sec_cmp to failed, if it has been defined, compare
-			int sec_cmp = -1;
-			if(def->flag_sec != NULL) sec_cmp = strcmp(def->flag_sec, flag);
-			
-			//If either flag string matched, return detected var
-			if(pri_cmp == 0 || sec_cmp == 0) return def->was_detected;
-	}
+	int ret;
+	if((ret = FindDefinedByFlag(flag)) < 0) return -1;
 	
-	//Not match found, give error
-	return -1;
+	//Get index's detected var
+	return this->GetDetectedStatus(ret);
+}
+
+std::string ClamppClass::GetSubstring(const int index) {
+	//Return empty string is there's an error
+	if(index < 0 || (size_t)index >= this->DefinedArgList.size()) return std::string();
+	
+	const char *substr = this->DefinedArgList[ (size_t)index ].substr;
+	//Guard against NULL char strings.
+	if(substr == NULL) return std::string();
+	return std::string(substr);
+}
+
+std::string ClamppClass::GetSubstring(const char *flag) {
+	int ret;
+	if((ret = FindDefinedByFlag(flag)) < 0) return std::string();
+	
+	//Get index's detected var
+	return this->GetSubstring(ret);
 }
 

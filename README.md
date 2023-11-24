@@ -17,6 +17,7 @@ an example of how to use clampp.
 ## TODO
 * Detect multiple definitions of arguments, and allow some action to be taken
 * Add more featuresto the argument handler, maybe a callback system
+* enum Substring enabled/disabled to increase readability.
 
 ----
 This project is under GPLv2.0. See LICENSE for more info. ADBeta(c) Nov 2023

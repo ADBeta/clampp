@@ -5,7 +5,7 @@
 * See the GitHub For more information: https://github.com/ADBeta/clampp
 * See example.cpp for programatic demonstation of usage/syntax.
 *
-* ADBeta(c)    23 Nov 2023    Version 0.5.8
+* ADBeta(c)    24 Nov 2023    Version 1.0.0
 *******************************************************************************/
 #ifndef CLAMPP_H
 #define CLAMPP_H
@@ -48,8 +48,10 @@ class ClamppClass {
 	std::string GetSubstring(const int index);
 	std::string GetSubstring(const char *flag);
 	
+	//Get the Undefined Arg at index
+	std::string GetUndefinedArg(const int index);
 	
-	//private:
+	private:
 	/*** Argument Definition Struct *******************************************/
 	typedef struct {
 		const char *flag_pri = NULL;   //Primary flag string for argument (e.g -h)
@@ -66,6 +68,7 @@ class ClamppClass {
 	//List of Undefined Arguments. Not used if Config diables it
 	std::vector<std::string> UndefinedArgList;
 
+	/*** Private Functions ****************************************************/
 	//Finds & returns the index of a DefinedArg by its flag_str.
 	//Returns -1 if the flag_str could not match with any Defined Arg
 	int FindDefinedByFlag(const char *flag);

@@ -9,8 +9,6 @@
 *******************************************************************************/
 #include "clampp.hpp"
 
-#include <iostream> //TODO
-
 #include <iterator>
 #include <cstring>
 #include <string>
@@ -98,7 +96,7 @@ ClamppError ClamppClass::ScanArgs(const int argc, const char *argv[]) {
 			//If undefined strings are not allowed, return an error.
 			if(ClamppConfig::allow_undefined_args == false) return CLAMPP_ENOMATCH;
 			//If they are allowed, push the string to the end of the list.
-			this->UndefinedArgList.push_back(arg_str);
+			this->UndefinedArgList.push_back(std::string(arg_str));
 		}		
 	}
 	
@@ -139,3 +137,9 @@ std::string ClamppClass::GetSubstring(const char *flag) {
 	return this->GetSubstring(ret);
 }
 
+std::string ClamppClass::GetUndefinedArg(const int index) {
+	//Return empty string is there's an error
+	if(index < 0 || (size_t)index >= this->UndefinedArgList.size()) return std::string();
+	
+	return UndefinedArgList[ (size_t)index ];
+}

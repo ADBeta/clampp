@@ -13,18 +13,15 @@
 #include <cstring>
 #include <string>
 
-/*** Configuration ************************************************************/
-bool ClamppConfig::allow_undefined_args = false;
-
-
 /*** Private Functions ********************************************************/
 int ClamppClass::FindDefinedByFlag(const char *flag) {
 	//Go through each Defined Argument looking for a match
-	for(auto def = this->DefinedArgList.begin(); def != this->DefinedArgList.end(); def++) {
+	for(auto def = DefinedArgList.begin(); def != DefinedArgList.end(); def++) {
+	
 		//See if the primary or secondary flag strings match
-		int pri_cmp = -1, sec_cmp = -1;
-		pri_cmp = strcmp(def->flag_pri, flag);
-		if(def->flag_sec != NULL) sec_cmp = strcmp(def->flag_sec, flag);
+		int pri_cmp = strcmp(def->flag_pri, flag);
+		int sec_cmp = -1;
+		if(def->flag_sec) sec_cmp = strcmp(def->flag_sec, flag);
 		
 		//If either flag string matched, return the distance from begin() to now
 		if(pri_cmp == 0 || sec_cmp == 0) {
@@ -94,7 +91,7 @@ ClamppError ClamppClass::ScanArgs(const int argc, const char *argv[]) {
 		} 
 		else {
 			//If undefined strings are not allowed, return an error.
-			if(ClamppConfig::allow_undefined_args == false) return CLAMPP_ENOMATCH;
+			if(this->allow_undefined_args == false) return CLAMPP_ENOMATCH;
 			//If they are allowed, push the string to the end of the list.
 			this->UndefinedArgList.push_back(std::string(arg_str));
 		}		

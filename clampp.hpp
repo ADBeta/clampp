@@ -13,12 +13,8 @@
 #include <vector>
 #include <string>
 
-/*** Configuration Variables **********************************************/
-namespace ClamppConfig {
-	//Are undefined arguments allowed. Defaults to false
-	extern bool allow_undefined_args;
-}
-
+#define CLAMPP_SUBSTR_ENABLE  true
+#define CLAMPP_SUBSTR_DISABLE false
 
 typedef enum {
 	CLAMPP_ENONE = 0, CLAMPP_ENOARGS = -1, CLAMPP_ENOMATCH = -2, 
@@ -27,6 +23,9 @@ typedef enum {
 
 class ClamppClass {
 	public:
+	/*** Configuration ********************************************************/
+	bool allow_undefined_args = false;
+	
 	/*** API Functions ********************************************************/
 	//NOTE: Function overflow for both versions of a Defined Argument.
 	//Returns an index of the argument in the list or -1 if an error occured

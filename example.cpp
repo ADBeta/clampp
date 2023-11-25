@@ -26,15 +26,15 @@ int main(const int argc, const char *argv[]) {
 	//allow_undefined_args controls what happens during a ScanArgs.
 	//If false, ScanArgs returns CLAMPP_ENOMATCH when an Undefined Arg is found
 	//If true, an Undefined Argument will be pushed onto UndefinedArgList
-	ClamppConfig::allow_undefined_args = false;
+	Args.allow_undefined_args = false;
 	
 	
 	//Define Arguments. Keep the return index, as it makes looking for them
 	//much faster, althrough it can be done by string
 	//NOTE: You can define an arg with one, or two flag strings
-	//NOTE: The Bool value is if the string has a substring.
-	int test = Args.AddDefinition   ("test", "tset", false);
-	int substr = Args.AddDefinition ("substr", true);
+	//NOTE: CLAMPP_SUBSTR_ are mapped to boolean values. Can alsu use true/false
+	int test = Args.AddDefinition   ("test", "tset", CLAMPP_SUBSTR_DISABLE);
+	int substr = Args.AddDefinition ("substr", CLAMPP_SUBSTR_ENABLE);
 	
 	//Scan the input Arguments. Value is nudged to skip argv[0], but this is 
 	//not required, it just skips the executable name
